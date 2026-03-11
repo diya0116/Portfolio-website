@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qorry — Designer</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #fafaf9;
+  --ink: #111;
+  --subtle: #888;
+  --line: #e8e8e6;
+  --white: #fff;
+}
+
+body {
+  font-family: 'Geist', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* NAV */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 48px;
+  height: 56px;
+  background: rgba(250,250,249,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+
+.logo {
+  font-family: 'Instrument Serif', serif;
+  font-size: 20px;
+  letter-spacing: -0.3px;
+}
+
+.nav-links { display: flex; gap: 2px; }
+
+.nav-link {
+  padding: 6px 16px;
+  border-radius: 6px;
+  font-size: 13.5px;
+  color: var(--subtle);
+  cursor: pointer;
+  background: none;
+  border: none;
+  transition: color 0.15s, background 0.15s;
+  font-family: 'Geist', sans-serif;
+}
+.nav-link:hover { color: var(--ink); background: #f0f0ee; }
+.nav-link.active { color: var(--ink); background: #ebebea; font-weight: 500; }
+
+.nav-pill {
+  height: 32px;
+  padding: 0 16px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: var(--white);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: 'Geist', sans-serif;
+}
+.nav-pill:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+/* LAYOUT */
+main {
+  padding-top: 56px;
+  max-width: 840px;
+  margin: 0 auto;
+  padding-left: 48px;
+  padding-right: 48px;
+}
+
+.section { display: none; padding: 64px 0; }
+.section.active { display: block; }
+
+@keyframes fade {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.section.active > * { animation: fade 0.35s ease both; }
+.section.active > *:nth-child(2) { animation-delay: 0.06s; }
+.section.active > *:nth-child(3) { animation-delay: 0.12s; }
+.section.active > *:nth-child(4) { animation-delay: 0.18s; }
+.section.active > *:nth-child(5) { animation-delay: 0.22s; }
+
+/* ── ABOUT ── */
+.about-hero { margin-bottom: 60px; }
+
+.about-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--subtle);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+.about-name {
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(52px, 9vw, 84px);
+  line-height: 1.0;
+  letter-spacing: -2px;
+  margin-bottom: 28px;
+}
+.about-name em { font-style: italic; color: var(--subtle); }
+
+.about-bio {
+  font-size: 16px;
+  color: #555;
+  max-width: 500px;
+  line-height: 1.7;
+  font-weight: 300;
+}
+
+.info-row {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 24px;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--line);
+  align-items: start;
+}
+.info-row:first-of-type { border-top: 1px solid var(--line); }
+
+.info-label {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--subtle);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding-top: 1px;
+}
+
+.info-value { font-size: 14.5px; color: var(--ink); font-weight: 300; }
+
+.contact-links { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.contact-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 13px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+  text-decoration: none;
+  background: var(--white);
+  transition: all 0.15s;
+  font-family: 'Geist', sans-serif;
+}
+.contact-link:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+/* ── RESUME ── */
+.resume-block { margin-bottom: 48px; }
+
+.block-heading {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--subtle);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.block-heading::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+
+.table-row {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 24px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--line);
+}
+.table-row:first-of-type { border-top: 1px solid var(--line); }
+
+.tr-period { font-size: 12px; color: var(--subtle); font-weight: 300; padding-top: 2px; }
+.tr-sub { font-size: 12px; color: var(--subtle); margin-bottom: 2px; }
+.tr-main { font-size: 14.5px; font-weight: 500; margin-bottom: 3px; }
+.tr-desc { font-size: 13px; color: #777; font-weight: 300; }
+
+.skills-wrap {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.skill-pill {
+  padding: 12px 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
+  transition: border-color 0.15s;
+}
+.skill-pill:hover { border-color: #bbb; }
+.skill-pill-name { font-size: 13.5px; font-weight: 500; }
+.skill-pill-lvl { font-size: 12px; color: var(--subtle); margin-top: 2px; }
+
+.tag-wrap { display: flex; flex-wrap: wrap; gap: 7px; }
+.tag {
+  padding: 5px 12px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  font-size: 12.5px;
+  color: #555;
+  background: var(--white);
+}
+
+/* ── WORK ── */
+.work-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.work-item:first-child { grid-column: span 2; }
+
+.work-item {
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: var(--white);
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+.work-item:hover {
+  border-color: #ccc;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+  transform: translateY(-2px);
+}
+
+.work-thumb {
+  width: 100%;
+  aspect-ratio: 16/7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+}
+.work-item:first-child .work-thumb { aspect-ratio: 21/7; }
+
+.work-meta {
+  padding: 14px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--line);
+}
+
+.work-name { font-size: 13.5px; font-weight: 500; }
+.work-cat { font-size: 12px; color: var(--subtle); margin-top: 1px; }
+.work-arrow { font-size: 15px; color: #ccc; transition: transform 0.2s, color 0.2s; }
+.work-item:hover .work-arrow { transform: translate(2px, -2px); color: var(--ink); }
+
+/* MOBILE */
+@media (max-width: 600px) {
+  nav { padding: 0 20px; }
+  main { padding-left: 20px; padding-right: 20px; }
+  .info-row, .table-row { grid-template-columns: 1fr; gap: 4px; }
+  .info-label, .tr-period { font-size: 11px; }
+  .skills-wrap { grid-template-columns: 1fr 1fr; }
+  .work-grid { grid-template-columns: 1fr; }
+  .work-item:first-child { grid-column: span 1; }
+  .nav-link { padding: 6px 10px; font-size: 13px; }
+  .about-name { letter-spacing: -1.5px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Qorry</div>
+  <div class="nav-links">
+    <button class="nav-link active" onclick="show('about',this)">About</button>
+    <button class="nav-link" onclick="show('resume',this)">Resume</button>
+    <button class="nav-link" onclick="show('work',this)">Work</button>
+  </div>
+  <button class="nav-pill" onclick="window.location='mailto:qorry@gmail.com'">Contact</button>
+</nav>
+
+<main>
+
+  <!-- ABOUT -->
+  <section id="about" class="section active">
+    <div class="about-hero">
+      <p class="about-label">Graphic Designer</p>
+      <h1 class="about-name">Hello,<br>I'm <em>Qorry</em></h1>
+      <p class="about-bio">A graphic designer based in Yogyakarta with a background in Civil Engineering. I craft identities, packaging, and digital visuals that are functional and beautiful.</p>
+    </div>
+
+    <div class="info-row">
+      <div class="info-label">Location</div>
+      <div class="info-value">Yogyakarta, Indonesia</div>
+    </div>
+    <div class="info-row">
+      <div class="info-label">Speciality</div>
+      <div class="info-value">Brand Identity · Packaging · Motion · Social Media</div>
+    </div>
+    <div class="info-row">
+      <div class="info-label">Status</div>
+      <div class="info-value">Open to freelance projects</div>
+    </div>
+    <div class="info-row">
+      <div class="info-label">Contact</div>
+      <div class="info-value">
+        <div class="contact-links">
+          <a href="mailto:qorry@gmail.com" class="contact-link">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
+            Email
+          </a>
+          <a href="https://linkedin.com" target="_blank" class="contact-link">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+            LinkedIn
+          </a>
+          <a href="https://behance.net" target="_blank" class="contact-link">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9h8c1.7 0 3 1.3 3 3s-1.3 3-3 3H3V9z"/><path d="M3 6h7"/><path d="M3 15h9c1.7 0 3-1.3 3-3"/><path d="M15 9h6"/><path d="M21 12h-6"/></svg>
+            Behance
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESUME -->
+  <section id="resume" class="section">
+
+    <div class="resume-block">
+      <h2 class="block-heading">Experience</h2>
+      <div class="table-row">
+        <div class="tr-period">2022 — Present</div>
+        <div>
+          <div class="tr-sub">Freelance</div>
+          <div class="tr-main">Graphic Designer</div>
+          <div class="tr-desc">Logo, brand identity, social media content, editorial.</div>
+        </div>
+      </div>
+      <div class="table-row">
+        <div class="tr-period">2022 — Present</div>
+        <div>
+          <div class="tr-sub">Etsy</div>
+          <div class="tr-main">Digital Product Seller</div>
+          <div class="tr-desc">Watercolor illustrations and merch design templates.</div>
+        </div>
+      </div>
+      <div class="table-row">
+        <div class="tr-period">2021 — 2022</div>
+        <div>
+          <div class="tr-sub">PT Kanaan Global Indonesia</div>
+          <div class="tr-main">Junior Industrial Engineering Staff</div>
+          <div class="tr-desc">Process documentation and workflow improvement.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="resume-block">
+      <h2 class="block-heading">Skills</h2>
+      <div class="skills-wrap">
+        <div class="skill-pill"><div class="skill-pill-name">Illustrator</div><div class="skill-pill-lvl">Advanced</div></div>
+        <div class="skill-pill"><div class="skill-pill-name">Photoshop</div><div class="skill-pill-lvl">Advanced</div></div>
+        <div class="skill-pill"><div class="skill-pill-name">After Effects</div><div class="skill-pill-lvl">Intermediate</div></div>
+        <div class="skill-pill"><div class="skill-pill-name">Figma</div><div class="skill-pill-lvl">Intermediate</div></div>
+        <div class="skill-pill"><div class="skill-pill-name">InDesign</div><div class="skill-pill-lvl">Intermediate</div></div>
+        <div class="skill-pill"><div class="skill-pill-name">Cinema 4D</div><div class="skill-pill-lvl">Beginner</div></div>
+      </div>
+    </div>
+
+    <div class="resume-block">
+      <h2 class="block-heading">Softskills</h2>
+      <div class="tag-wrap">
+        <span class="tag">Creativity</span>
+        <span class="tag">Teamwork</span>
+        <span class="tag">Time Management</span>
+        <span class="tag">Flexibility</span>
+        <span class="tag">Communication</span>
+      </div>
+    </div>
+
+    <div class="resume-block">
+      <h2 class="block-heading">Education</h2>
+      <div class="table-row">
+        <div class="tr-period">2022</div>
+        <div>
+          <div class="tr-sub">Skola Expert</div>
+          <div class="tr-main">UI/UX Bootcamp</div>
+        </div>
+      </div>
+      <div class="table-row">
+        <div class="tr-period">2017 — 2021</div>
+        <div>
+          <div class="tr-sub">Universitas Sebelas Maret</div>
+          <div class="tr-main">Civil Engineering</div>
+          <div class="tr-desc">GPA 3.59 / 4.00</div>
+        </div>
+      </div>
+      <div class="table-row">
+        <div class="tr-period">2015 — 2017</div>
+        <div>
+          <div class="tr-sub">SMA N 1 Yogyakarta</div>
+          <div class="tr-main">Science</div>
+          <div class="tr-desc">GPA 85.6 / 100</div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- WORK -->
+  <section id="work" class="section">
+    <div class="work-grid">
+
+      <div class="work-item">
+        <div class="work-thumb" style="background:#f5f1ec;">🏷️</div>
+        <div class="work-meta">
+          <div><div class="work-name">Nusantara Coffee Co.</div><div class="work-cat">Brand Identity · 2023</div></div>
+          <div class="work-arrow">↗</div>
+        </div>
+      </div>
+
+      <div class="work-item">
+        <div class="work-thumb" style="background:#eef4ee;">📦</div>
+        <div class="work-meta">
+          <div><div class="work-name">Herbal Skincare</div><div class="work-cat">Packaging · 2023</div></div>
+          <div class="work-arrow">↗</div>
+        </div>
+      </div>
+
+      <div class="work-item">
+        <div class="work-thumb" style="background:#eef1f8;">📱</div>
+        <div class="work-meta">
+          <div><div class="work-name">Tech Startup Feed</div><div class="work-cat">Social Media · 2022</div></div>
+          <div class="work-arrow">↗</div>
+        </div>
+      </div>
+
+      <div class="work-item">
+        <div class="work-thumb" style="background:#faf4ee;">🎨</div>
+        <div class="work-meta">
+          <div><div class="work-name">Jazz Festival Series</div><div class="work-cat">Poster · 2022</div></div>
+          <div class="work-arrow">↗</div>
+        </div>
+      </div>
+
+      <div class="work-item">
+        <div class="work-thumb" style="background:#f5eef8;">🖼️</div>
+        <div class="work-meta">
+          <div><div class="work-name">Botanical Illustrations</div><div class="work-cat">Watercolor · 2022</div></div>
+          <div class="work-arrow">↗</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<script>
+function show(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>
